@@ -52,21 +52,27 @@ public:
     const juce::String getProgramName (int index) override;
     void changeProgramName (int index, const juce::String& newName) override;
 
+    juce::AudioProcessorValueTreeState apvts
+    {
+        *this, nullptr, "Parameters", Parameters::createParameterLayout()
+       
+    };
+    
     //==============================================================================
     void getStateInformation (juce::MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
     // used to recal plugin preset information
 private:
     
-    juce::AudioProcessorValueTreeState apvts {
-        *this, nullptr, "Parameters", Parameters::createParameterLayout()
-       
-    };
- 
     Parameters params {apvts};
  
-    
     juce::dsp::DelayLine<float, juce::dsp::DelayLineInterpolationTypes::Linear> delayLine;
+    
+    float feedbackL = 0.0f;
+    float feedbackR = 0.0f;
+    
+    float saturationCharacterDrive = 1.5f;
+    float saturationCharacter(float x);
     
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TheDelayAudioProcessor)

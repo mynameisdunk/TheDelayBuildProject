@@ -15,6 +15,8 @@
 const juce::ParameterID gainParamID {"gain", 1};
 const juce::ParameterID delayTimeParamID {"delayTime", 1};
 const juce::ParameterID mixParamID {"mix", 1};
+const juce::ParameterID feedbackParamID {"feedback", 1};
+
 
 class Parameters
 {
@@ -35,10 +37,10 @@ static juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout
     void update() noexcept;
     
     float gain = 0.0f;
-    
     float delayTime = 0.0f;
-    
     float mix = 1.0f;
+    float feedback = 1.0f;
+    
     
 private:
     juce::AudioParameterFloat* gainParam;
@@ -46,13 +48,20 @@ private:
     // this creates a new object for a float value which smooths the gain when the parameter is automated or changed quickly.. Prevents jumps from 0 to -6db gain, instead smoothly moving between values inbetween
     
     juce::AudioParameterFloat* delayTimeParam;
-    
     float targetDelayTime = 0.0f;
     float coeff = 0.0f; // one pole smoothing
     
     juce::AudioParameterFloat* mixParam;
     juce::LinearSmoothedValue<float> mixSmoother;
     
+    juce::AudioParameterFloat* feedbackParam;
+    juce::LinearSmoothedValue<float> feedbackSmoother;
+    
+    
+    
+    
+    
   
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Parameters)
 };
 

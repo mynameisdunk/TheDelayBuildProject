@@ -1,16 +1,10 @@
-/*
-  ==============================================================================
-
-    This file contains the basic framework code for a JUCE plugin processor.
-
-  ==============================================================================
-*/
-
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 #include "Parameters.h"
+#include "EarProtection.h"
 
-//==============================================================================
+
+//============================================================================================================
 
 TheDelayAudioProcessor::TheDelayAudioProcessor() :
     AudioProcessor(
@@ -26,7 +20,7 @@ TheDelayAudioProcessor::~TheDelayAudioProcessor()
 {
 }
 
-//==============================================================================
+//============================================================================================================
 const juce::String TheDelayAudioProcessor::getName() const
 {
     return JucePlugin_Name;
@@ -110,8 +104,13 @@ void TheDelayAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlo
     delayLine.setMaximumDelayInSamples(maxDelayInSamples);
     delayLine.reset();
     
+    feedbackL = 0.0f;
+    feedbackR = 0.0f;
+    
     DBG(maxDelayInSamples);
 }
+
+//============================================================================================================
 
 void TheDelayAudioProcessor::releaseResources()
 {
@@ -125,6 +124,15 @@ bool TheDelayAudioProcessor::isBusesLayoutSupported(const BusesLayout& layouts) 
 return layouts.getMainOutputChannelSet() == juce::AudioChannelSet::stereo();
 }
 #endif
+
+//============================================================================================================
+
+float TheDelayAudioProcessor::saturationCharacter(float x)
+{
+    return std::tanh(x * saturationCharacterDrive);
+}
+
+//============================================================================================================
 
 void TheDelayAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, [[maybe_unused]] juce::MidiBuffer& midiMessages)
 {
@@ -153,11 +161,17 @@ void TheDelayAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, [[m
         float dryL = channelDataL[sample];
         float dryR = channelDataR[sample];
         
-        delayLine.pushSample(0,dryL);
-        delayLine.pushSample(1,dryR);
+        delayLine.pushSample(0, dryL + feedbackL);
+        delayLine.pushSample(1, dryR + feedbackR);
         
         float wetL = delayLine.popSample(0);
         float wetR = delayLine.popSample(1);
+        
+        float saturationCharacterL = saturationCharacter(wetL);
+        float saturationCharacterR = saturationCharacter(wetR);
+        
+        feedbackL = saturationCharacterL * params.feedback;
+        feedbackR = saturationCharacterR * params.feedback;
         
         float mixL = dryL * (1.0f - params.mix) + wetL * params.mix;
         float mixR = dryR * (1.0f - params.mix) + wetR * params.mix;
@@ -166,9 +180,17 @@ void TheDelayAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, [[m
         channelDataR[sample] = mixR * params.gain;
         
     }
+
+#if JUCE_DEBUG
+    earProtection(buffer);
+#endif
+
+    
 }
 
-//==============================================================================
+// delayLine.popSample(0, delayInSamples * 2.0f, false)
+
+//===============================================================================================================
 bool TheDelayAudioProcessor::hasEditor() const
 {
     return true; // (change this to false if you choose to not supply an editor)
@@ -179,7 +201,7 @@ juce::AudioProcessorEditor* TheDelayAudioProcessor::createEditor()
     return new TheDelayAudioProcessorEditor (*this);
 }
 
-//==============================================================================
+//==========================================================================================================
 void TheDelayAudioProcessor::getStateInformation (juce::MemoryBlock& destData)
 {
     copyXmlToBinary(*apvts.copyState().createXml(),destData);
@@ -196,7 +218,7 @@ void TheDelayAudioProcessor::setStateInformation (const void* data, int sizeInBy
 
  
 
-//==============================================================================
+//==========================================================================================================
 // This creates new instances of the plugin..
 juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()
     {
