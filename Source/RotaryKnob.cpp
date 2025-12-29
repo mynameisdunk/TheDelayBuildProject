@@ -9,12 +9,13 @@
 RotaryKnob::RotaryKnob(const juce::String& text,
                        juce::AudioProcessorValueTreeState& apvts,
                        const juce::ParameterID& parameterID,
-                       bool drawFromMiddle)
+                       bool drawFromMiddle,
+                       bool showTextBox)
 : attachment(apvts, parameterID.getParamID(), slider)
 
 {
     slider.setSliderStyle(juce::Slider::SliderStyle::RotaryHorizontalVerticalDrag);
-    slider.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 70, 16);
+    slider.setTextBoxStyle(showTextBox ? juce::Slider::TextBoxBelow : juce::Slider::NoTextBox, false, 70, 16);
     slider.setBounds(0, 0, 70, 86);
     addAndMakeVisible(slider);
     

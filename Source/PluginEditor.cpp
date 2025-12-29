@@ -2,6 +2,7 @@
 #include "PluginEditor.h"
 #include "Parameters.h"
 #include "RotaryKnob.h"
+#include "LookAndFeel.h"
 
 //==============================================================================================================
 TheDelayAudioProcessorEditor::TheDelayAudioProcessorEditor (TheDelayAudioProcessor& p)
@@ -16,6 +17,14 @@ TheDelayAudioProcessorEditor::TheDelayAudioProcessorEditor (TheDelayAudioProcess
     feedbackGroup.setTextLabelPosition(juce::Justification::horizontallyCentred);
     feedbackGroup.addAndMakeVisible(feedbackKnob);
     addAndMakeVisible(feedbackGroup);
+    feedbackGroup.addAndMakeVisible(stereoKnob);
+    stereoKnob.setTopLeftPosition(feedbackKnob.getRight() + 40, 20);
+    feedbackGroup.addAndMakeVisible(lowShelfGainKnob);
+    feedbackGroup.addAndMakeVisible(highShelfGainKnob);
+    feedbackGroup.addAndMakeVisible(inputLevelKnob);
+    feedbackGroup.addAndMakeVisible(wowFlutterKnob);
+   
+    
     
     outputGroup.setText("Output");
     outputGroup.setTextLabelPosition(juce::Justification::horizontallyCentred);
@@ -25,7 +34,7 @@ TheDelayAudioProcessorEditor::TheDelayAudioProcessorEditor (TheDelayAudioProcess
     
     setLookAndFeel(&mainLF);
     
-    setSize (500, 330);
+    setSize (500, 440);
     //^^ this must always be the last part of the constructor
 }
 
@@ -45,9 +54,12 @@ void TheDelayAudioProcessorEditor::paint (juce::Graphics& g)
     auto fillType = juce::FillType(noise, juce::AffineTransform::scale(0.5f));
     g.setFillType(fillType);
     g.fillRect(getLocalBounds());
+    g.setColour(Colours::echoGreen);
+    g.fillAll();
+    
 //{
     auto rect = getLocalBounds().withHeight(40);
-    g.setColour(juce::Colours::pink);
+    g.setColour(Colours::echoHeader);
     g.fillRect(rect);
     // creates a rectangle at the top of the image and paints it pink
     
@@ -78,8 +90,14 @@ void TheDelayAudioProcessorEditor::resized()
     mixKnob.setTopLeftPosition(20, 20);
     gainKnob.setTopLeftPosition(mixKnob.getX(), mixKnob.getBottom()+10);
     feedbackKnob.setTopLeftPosition(20, 20);
+    lowShelfGainKnob.setTopLeftPosition(feedbackKnob.getX(), feedbackKnob.getBottom() +10);
+    highShelfGainKnob.setTopLeftPosition(stereoKnob.getX(), stereoKnob.getBottom() +10);
+    
+    inputLevelKnob.setTopLeftPosition(lowShelfGainKnob.getX(), lowShelfGainKnob.getBottom() + 10);
+    wowFlutterKnob.setTopLeftPosition(highShelfGainKnob.getX(), highShelfGainKnob.getBottom() + 10);
     
     gainKnob.slider.setColour(juce::Slider::rotarySliderFillColourId, juce::Colours::lightgreen);
+   
     
 }
 

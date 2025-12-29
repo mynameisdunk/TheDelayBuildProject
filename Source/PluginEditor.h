@@ -36,6 +36,15 @@ private:
     RotaryKnob mixKnob {"Mix", audioProcessor.apvts, mixParamID};
     RotaryKnob delayTimeKnob {"Time", audioProcessor.apvts, delayTimeParamID};
     RotaryKnob feedbackKnob {"Feedback", audioProcessor.apvts, feedbackParamID, true};
+    RotaryKnob stereoKnob {"Stereo", audioProcessor.apvts, stereoParamID, true};
+    RotaryKnob highCutKnob {"High Cut", audioProcessor.apvts, highCutParamID};
+    RotaryKnob lowCutKnob {"Low Cut", audioProcessor.apvts, lowCutParamID};
+    // RotaryKnob resonanceKnob {"Resonance", audioProcessor.apvts, resonanceParamID};
+    RotaryKnob dirtKnob {"Dirt", audioProcessor.apvts, dirtParamID};
+    RotaryKnob inputLevelKnob {"Input Level", audioProcessor.apvts, inputLevelParamID, false, false};
+    RotaryKnob lowShelfGainKnob {"Lows", audioProcessor.apvts, lowShelfParamID, true};
+    RotaryKnob highShelfGainKnob {"Highs", audioProcessor.apvts, highShelfParamID, true};
+    RotaryKnob wowFlutterKnob {"Machine Age", audioProcessor.apvts, wowFlutterParamID, false, false};
     
     juce::GroupComponent delayGroup, feedbackGroup, outputGroup;
     

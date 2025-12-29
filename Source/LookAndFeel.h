@@ -5,11 +5,14 @@ namespace Colours
 {
     const juce::Colour background { 245, 240, 235 };
     const juce::Colour header { 40, 40, 40 };
+    const juce::Colour echoGreen { 125, 141, 102 };
+    const juce::Colour echoHeader { 50, 49, 46 };
 
     namespace Knob
     {
         const juce::Colour trackBackground { 205, 200, 195 };
         const juce::Colour trackActive { 177, 101, 135 };
+        const juce::Colour echoTrackActive { 134, 57, 51 };
         const juce::Colour outline { 255, 250, 245 };
         const juce::Colour gradientTop { 250, 245, 240 };
         const juce::Colour gradientBottom { 240, 235, 230 };
@@ -19,6 +22,7 @@ namespace Colours
         const juce::Colour textBoxBackground { 80, 80, 80 };
         const juce::Colour value { 240, 240, 240 };
         const juce::Colour caret { 255, 255, 255 };
+        
 
     }
     namespace Group

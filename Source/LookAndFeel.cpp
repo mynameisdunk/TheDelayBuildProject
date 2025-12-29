@@ -27,7 +27,7 @@ RotaryKnobLookAndFeel::RotaryKnobLookAndFeel()
 {
     setColour(juce::Label::textColourId, Colours::Knob::label);
     setColour(juce::Slider::textBoxTextColourId, Colours::Knob::label);
-    setColour(juce::Slider::rotarySliderFillColourId, Colours::Knob::trackActive);
+    setColour(juce::Slider::rotarySliderFillColourId, Colours::Knob::echoTrackActive);
     setColour(juce::Slider::textBoxTextColourId, Colours::Knob::label);
     setColour(juce::CaretComponent::caretColourId, Colours::Knob::caret);
     
@@ -48,7 +48,17 @@ void RotaryKnobLookAndFeel::drawRotarySlider(juce::Graphics& g, int x, int y, in
     g.fillEllipse(knobRect);
     // ^^ this is the main circle knob seen
     
-    auto innerRect = knobRect.reduced(2.0f, 2.0f);
+    // TRYING TO ADD ANOTHER CIRCLE (I think I did it!!!!)
+    
+    auto knobOutline = bounds.reduced(12.0f, 12.0f);
+    auto pathOutline = juce::Path();
+    path.addEllipse(knobOutline);
+    
+    g.setColour(Colours::echoHeader);
+    g.fillEllipse(knobOutline);
+    
+    
+    auto innerRect = knobRect.reduced(4.0f, 4.0f);
     auto gradient = juce::ColourGradient(Colours::Knob::gradientTop, 0.0f, innerRect.getY(), Colours::Knob::gradientBottom, 0.0f, innerRect.getBottom(), false);
     g.setGradientFill(gradient);
     g.fillEllipse(innerRect);
@@ -148,7 +158,7 @@ juce::Label* RotaryKnobLookAndFeel::createSliderTextBox(juce::Slider& slider)
 MainLookAndFeel::MainLookAndFeel()
 {
     setColour(juce::GroupComponent::textColourId, Colours::Group::label);
-    setColour(juce::GroupComponent::outlineColourId, Colours::Group::outline);
+    setColour(juce::GroupComponent::outlineColourId, Colours::echoHeader);
     
 }
 

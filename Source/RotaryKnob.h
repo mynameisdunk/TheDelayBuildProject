@@ -9,7 +9,8 @@ public:
     RotaryKnob(const juce::String& text,
                juce::AudioProcessorValueTreeState& apvts,
                const juce::ParameterID& paramID,
-               bool drawFromMiddle = false);
+               bool drawFromMiddle = false,
+               bool showTextBox = true);
     
     ~RotaryKnob() override;
 
